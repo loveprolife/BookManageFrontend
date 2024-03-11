@@ -31,31 +31,34 @@ jobs:
             cd /data/BookManageFrontend
             ls -al
             
-            docker stop bookconsumer
-            docker stop bookprovider
-            docker stop eureka
-            docker stop booknamagefrontend && docker rm booknamagefrontend
-            systemctl stop mysqld.service
+            # docker stop bookconsumer
+            # docker stop bookprovider
+            # docker stop eureka
+            # docker stop booknamagefrontend && docker rm booknamagefrontend
+            # systemctl stop mysqld.service
             
-            cd /data/BookManageFrontend
+            # cd /data/BookManageFrontend
             
+            kill -9 $(lsof -i:3000 -t)
+            kill -9 $(lsof -i:8000 -t)
+
             cnpm i
-            cnpm run build
+            nohup cnpm start 2>&1 &
             
-            docker pull nginx
-            docker run -p 80:80 --name booknamagefrontend  -itd nginx /bin/bash
+            # docker pull nginx
+            # docker run -p 80:80 --name booknamagefrontend  -itd nginx /bin/bash
             
-            systemctl start mysqld.service
-            docker start eureka
-            docker start bookprovider
-            docker start bookconsumer
+            # systemctl start mysqld.service
+            # docker start eureka
+            # docker start bookprovider
+            # docker start bookconsumer
             
-            docker exec booknamagefrontend rm -rf /usr/share/nginx/html
-            docker cp /data/BookManageFrontend/dist booknamagefrontend:/usr/share/nginx
-            docker exec booknamagefrontend mv /usr/share/nginx/dist /usr/share/nginx/html
-            docker exec booknamagefrontend sed -i 's/localhost/0.0.0.0/g' /etc/nginx/conf.d/default.conf
-            docker exec booknamagefrontend cp /etc/apt/sources.list.d/debian.sources /etc/apt/sources.list.d/debian.sources__bak
-            docker exec booknamagefrontend sed -i 's@deb.debian.org@mirrors.aliyun.com@g' /etc/apt/sources.list.d/debian.sources
-            docker exec booknamagefrontend apt-get update
-            docker exec booknamagefrontend apt-get install procps psmisc netcat-openbsd -y
-            docker exec booknamagefrontend nohup nginx 2>&1
+            # docker exec booknamagefrontend rm -rf /usr/share/nginx/html
+            # docker cp /data/BookManageFrontend/dist booknamagefrontend:/usr/share/nginx
+            # docker exec booknamagefrontend mv /usr/share/nginx/dist /usr/share/nginx/html
+            # docker exec booknamagefrontend sed -i 's/localhost/0.0.0.0/g' /etc/nginx/conf.d/default.conf
+            # docker exec booknamagefrontend cp /etc/apt/sources.list.d/debian.sources /etc/apt/sources.list.d/debian.sources__bak
+            # docker exec booknamagefrontend sed -i 's@deb.debian.org@mirrors.aliyun.com@g' /etc/apt/sources.list.d/debian.sources
+            # docker exec booknamagefrontend apt-get update
+            # docker exec booknamagefrontend apt-get install procps psmisc netcat-openbsd -y
+            # docker exec booknamagefrontend nohup nginx 2>&1
