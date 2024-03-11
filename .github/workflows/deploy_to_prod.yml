@@ -1,0 +1,61 @@
+name: Deploy workflow
+
+on:
+   push:
+       branches:
+         - 'main'
+   # Allows you to run this workflow manually from the Actions tab
+   workflow_dispatch:
+
+jobs:
+  deploy-workflow:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+      - name: Deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: 123.57.58.105
+          username: root
+          key: ${{ secrets.MYALIYUNSECRET }}
+          port: 22
+          command_timeout: 180m
+          script: |
+            source /etc/profile
+            rm -rf /data/BookManageFrontend
+            cd /data
+            git clone git@github.com:loveprolife/BookManageFrontend.git
+            cd /data/BookManageFrontend
+            ls -al
+            
+            docker stop bookconsumer
+            docker stop bookprovider
+            docker stop eureka
+            docker stop booknamagefrontend && docker rm booknamagefrontend
+            systemctl stop mysqld.service
+            
+            cd /data/BookManageFrontend
+            
+            cnpm i
+            cnpm run build
+            
+            docker pull nginx
+            docker run -p 80:80 --name booknamagefrontend  -itd nginx /bin/bash
+            
+            systemctl start mysqld.service
+            docker start eureka
+            docker start bookprovider
+            docker start bookconsumer
+            
+            docker exec booknamagefrontend rm -rf /usr/share/nginx/html
+            docker cp /data/BookManageFrontend/dist booknamagefrontend:/usr/share/nginx
+            docker exec booknamagefrontend mv /usr/share/nginx/dist /usr/share/nginx/html
+            docker exec booknamagefrontend sed -i 's/localhost/0.0.0.0/g' /etc/nginx/conf.d/default.conf
+            docker exec booknamagefrontend cp /etc/apt/sources.list.d/debian.sources /etc/apt/sources.list.d/debian.sources__bak
+            docker exec booknamagefrontend sed -i 's@deb.debian.org@mirrors.aliyun.com@g' /etc/apt/sources.list.d/debian.sources
+            docker exec booknamagefrontend apt-get update
+            docker exec booknamagefrontend apt-get install procps psmisc netcat-openbsd -y
+            docker exec booknamagefrontend nohup nginx 2>&1
