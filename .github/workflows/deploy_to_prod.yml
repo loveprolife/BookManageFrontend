@@ -43,7 +43,7 @@ jobs:
             kill -9 $(lsof -i:8000 -t)
 
             cnpm i
-            nohup cnpm start 2>&1 &
+            nohup cnpm start 2>&1 & && ls -al && exit
             
             # docker pull nginx
             # docker run -p 80:80 --name booknamagefrontend  -itd nginx /bin/bash
