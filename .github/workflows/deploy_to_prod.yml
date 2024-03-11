@@ -45,7 +45,7 @@ jobs:
             kill -9 $(lsof -i:8000 -t)
 
             cnpm i
-            cnpm start &
+            nohup cnpm start >/dev/null 2>&1 &
             ls -al
             
             # docker pull nginx
