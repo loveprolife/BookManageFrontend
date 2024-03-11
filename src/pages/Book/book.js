@@ -53,7 +53,7 @@ class Book extends React.Component {
     }
 
     loadPointList(pageNum, pageSize){
-        request('http://123.57.58.105:8000/getList/?pageNum='+pageNum+'&pageSize='+pageSize, {
+        request('http://123.57.58.105:7000/getList/?pageNum='+pageNum+'&pageSize='+pageSize, {
             method:'get'
         }).then((res)=>{
             this.setState({list: res.books, totalBooks: res.totalBooks});
@@ -66,10 +66,10 @@ class Book extends React.Component {
     }
 
     deleteBookById = (bookId) => {
-        request('http://123.57.58.105:8000/delete?bookId='+bookId, {
+        request('http://123.57.58.105:7000/delete?bookId='+bookId, {
             method:'get'
         }).then((res)=>{
-            request('http://123.57.58.105:8000/getList/?pageNum=1&pageSize=10', {
+            request('http://123.57.58.105:7000/getList/?pageNum=1&pageSize=10', {
             method:'get'
             }).then((data)=>{
                 if(parseInt(this.state.pageNum) > 1){
@@ -89,7 +89,7 @@ class Book extends React.Component {
 
     searchBookById = () => {
         if(parseInt(this.state.searchedBookId)>0){
-            request('http://123.57.58.105:8000/getBookById/?bookId='+this.state.searchedBookId, {
+            request('http://123.57.58.105:7000/getBookById/?bookId='+this.state.searchedBookId, {
                 method:'get'
             }).then((res)=>{
                 if(res.book != null){
@@ -119,7 +119,7 @@ class Book extends React.Component {
     }
 
     updateBookInfoById = (bookId) => {
-        request('http://123.57.58.105:8000/getBookById/?bookId='+bookId, {
+        request('http://123.57.58.105:7000/getBookById/?bookId='+bookId, {
             method:'get'
         }).then((res)=>{
             this.setState({modalUpdateVisible: true});
@@ -159,7 +159,7 @@ class Book extends React.Component {
             tmp = 1;
         }
         if (tmp ==0){
-            request('http://123.57.58.105:8000/insert?name='+this.state.bookNameI+'&author='+this.state.bookAuthorI+'&publicationyear='+this.state.bookPublicationyearI+'&ISBN='+this.state.bookIsbnI, {
+            request('http://123.57.58.105:7000/insert?name='+this.state.bookNameI+'&author='+this.state.bookAuthorI+'&publicationyear='+this.state.bookPublicationyearI+'&ISBN='+this.state.bookIsbnI, {
                 method:'get'
             }).then((res)=>{
                 this.setState({modalInsertVisible: false});
@@ -184,7 +184,7 @@ class Book extends React.Component {
         if (this.state.bookIsbnW.length <= 0){
             return;
         }
-        request('http://123.57.58.105:8000/update?bookId='+this.state.bookIdU+'&name='+this.state.bookNameW+'&author='+this.state.bookAuthorW+'&publicationyear='+this.state.bookPublicationyearW+'&ISBN='+this.state.bookIsbnW, {
+        request('http://123.57.58.105:7000/update?bookId='+this.state.bookIdU+'&name='+this.state.bookNameW+'&author='+this.state.bookAuthorW+'&publicationyear='+this.state.bookPublicationyearW+'&ISBN='+this.state.bookIsbnW, {
             method:'get'
         }).then((res)=>{
             this.setState({modalUpdateVisible: false});
