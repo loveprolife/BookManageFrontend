@@ -25,10 +25,12 @@ jobs:
           command_timeout: 180m
           script: |
             source /etc/profile
-            rm -rf /data/BookManageFrontend
-            cd /data
-            git clone git@github.com:loveprolife/BookManageFrontend.git
+            # rm -rf /data/BookManageFrontend
+            # cd /data
+            # git clone git@github.com:loveprolife/BookManageFrontend.git
             cd /data/BookManageFrontend
+            git pull
+
             ls -al
             
             # docker stop bookconsumer
@@ -43,7 +45,8 @@ jobs:
             kill -9 $(lsof -i:8000 -t)
 
             cnpm i
-            nohup cnpm start 2>&1 & && ls -al && exit
+            cnpm start &
+            ls -al
             
             # docker pull nginx
             # docker run -p 80:80 --name booknamagefrontend  -itd nginx /bin/bash
